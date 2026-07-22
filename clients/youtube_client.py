@@ -6,7 +6,7 @@ class YouTubeClient:
     def __init__(self, credentials: Credentials):
         self._yt = build("youtube", "v3", credentials=credentials)
 
-    def search_track(self, title: str, artist: str) -> str | None:
+    def search_track(self, title: str, artist: str) -> tuple[str, str] | None:
         query = f"{title} {artist}"
         request = self._yt.search().list(
             q=query,
@@ -17,7 +17,10 @@ class YouTubeClient:
         response = request.execute()
         items = response.get("items", [])
         if items:
-            return items[0]["id"]["videoId"]
+            return (
+                items[0]["id"]["videoId"],
+                items[0]["snippet"]["title"],
+            )
         return None
 
     def create_playlist(self, name: str, description: str) -> str:

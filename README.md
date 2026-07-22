@@ -1,29 +1,12 @@
 # PlaylistsTransfer
 
-Migra tus playlists de Spotify a YouTube Music.
+Migrar tus playlists de Spotify a YouTube Music.
 
 ## Setup
 
 ```bash
 pip install -r requirements.txt
-cp .env.example .env   # Completar con tus credenciales
-```
-
-## Uso
-
-```bash
-# Exportar playlists de Spotify
-python -c "from auth.spotify_auth import get_spotify_client
-from clients.spotify_client import SpotifyClient
-sp = get_spotify_client()
-for p in SpotifyClient(sp).get_user_playlists():
-    print(f'{p.name} ({len(p.tracks)} canciones)')"
-
-# Buscar un track en YouTube
-python -c "from auth.youtube_auth import get_youtube_credentials
-from clients.youtube_client import YouTubeClient
-yt = YouTubeClient(get_youtube_credentials())
-print(yt.search_track('Diamante Roto', 'El Mató a un Policía Motorizado'))"
+cp .env   # Completar con tus credenciales
 ```
 
 ## APIs
