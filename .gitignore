@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.env
+storage/.spotify_cache
+storage/.youtube_token.pickle
