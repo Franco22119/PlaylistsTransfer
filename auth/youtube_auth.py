@@ -17,6 +17,9 @@ def get_youtube_credentials() -> Credentials:
         with open(YT_TOKEN_PATH, "rb") as f:
             creds = pickle.load(f)
 
+    if creds and creds.valid:
+        return creds
+
     if creds and creds.expired and creds.refresh_token:
         creds.refresh(Request())
         with open(YT_TOKEN_PATH, "wb") as f:

@@ -1,5 +1,7 @@
+import time
 from googleapiclient.discovery import build
 from google.auth.credentials import Credentials
+from googleapiclient.errors import HttpError
 
 
 class YouTubeClient:
@@ -38,16 +40,29 @@ class YouTubeClient:
         return response["id"]
 
     def add_tracks(self, playlist_id: str, video_ids: list[str]):
-        for video_id in video_ids:
-            self._yt.playlistItems().insert(
-                part="snippet",
-                body={
-                    "snippet": {
-                        "playlistId": playlist_id,
-                        "resourceId": {
-                            "kind": "youtube#video",
-                            "videoId": video_id,
-                        },
-                    }
-                },
-            ).execute()
+        for i, video_id in enumerate(video_ids):
+            self._insert_with_retry(playlist_id, video_id)
+            if i < len(video_ids) - 1:
+                time.sleep(0.5)
+
+    def _insert_with_retry(self, playlist_id: str, video_id: str, retries: int = 3):
+        for attempt in range(retries):
+            try:
+                self._yt.playlistItems().insert(
+                    part="snippet",
+                    body={
+                        "snippet": {
+                            "playlistId": playlist_id,
+                            "resourceId": {
+                                "kind": "youtube#video",
+                                "videoId": video_id,
+                            },
+                        }
+                    },
+                ).execute()
+                return
+            except HttpError as e:
+                if e.resp.status in (409, 503) and attempt < retries - 1:
+                    time.sleep(2 ** attempt)
+                    continue
+                raise
