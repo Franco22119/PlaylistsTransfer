@@ -1,5 +1,5 @@
 from auth.spotify_auth import get_spotify_client
-from auth.youtube_auth import get_youtube_credentials
+from auth.youtube_auth import get_youtube_client
 from clients.spotify_client import SpotifyClient
 from clients.youtube_client import YouTubeClient
 from services.playlist_migrator import PlaylistMigrator
@@ -7,7 +7,7 @@ from services.playlist_migrator import PlaylistMigrator
 
 def main():
     sp = get_spotify_client()
-    yt = YouTubeClient(get_youtube_credentials())
+    yt = YouTubeClient(get_youtube_client())
 
     spotify = SpotifyClient(sp)
     migrator = PlaylistMigrator(spotify, yt)
